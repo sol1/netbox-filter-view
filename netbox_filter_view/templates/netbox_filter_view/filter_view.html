@@ -1,0 +1,229 @@
+{% extends 'generic/_base.html' %}
+{% load static %}
+
+{% block head %}
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="{% static 'netbox/css/tables.css' %}">
+  <style>
+    .alltables > h2.tabletitle {
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .alltables > table {
+      margin-bottom: 2rem;
+    }
+  </style>
+  <script>
+    /*
+      Gets a nested value for a dataset
+      data: dict
+      path: array
+
+      returns: value
+    */
+    function getNestedValue(data, path) {
+      var i;
+      var result = null
+      for (i = 0; data !== null && i < path.length; i++) {
+        if (data.hasOwnProperty(path[i])) {
+          if (i === path.length - 1) {
+            result = data[path[i]]
+          } else {
+            data = data[path[i]]
+          }
+        }
+      }
+      return result;
+    }
+
+
+    /*
+      Make a datatable dataset from a dataset
+      data: array of dicts
+
+      returns: array of arrays
+    */
+    function makeDataTableData(data) {
+      resultData = [];
+
+      // Process a dataset into a table
+      for (row of data) {
+        rowArr = [];
+        for (key of netboxColKeys) {
+          keyVal = getNestedValue(row, key.split('.'))
+          if (keyVal !== null) {
+            let lowerKey = key.toLowerCase();
+            let isUrl = /^https?:\/\//i.test(keyVal) || keyVal.includes('.') || lowerKey.includes('url');
+            if (isUrl) {
+              try {
+                let testUrl = new URL(keyVal.startsWith("http") ? keyVal : `http://${keyVal}`);
+                keyVal = `<a href="${testUrl.href}" target="_blank">${testUrl.href}</a>`;
+              } catch (e) {
+                console.warn(`Invalid URL detected in field "${key}": "${keyVal}". Rendering as plain text.`);
+                // invalid URL, just show as plain text
+              }
+            } else if (isValidIpv4Cidr(keyVal) || isValidIpv4Addr(keyVal)) {
+              let linkVal = keyVal;
+              if (isValidIpv4Cidr(keyVal)) {
+                linkVal = "http://" + keyVal.split('/')[0];
+              }
+            } else {
+              let keyLink = key.split('.').slice(0, -1);
+              if (keyLink.length === 0) {
+                keyLink = ["url"];
+              } else {
+                keyLink.push("url");
+              }
+              let linkVal = getNestedValue(row, keyLink);
+              if (linkVal !== null) {
+                keyVal = `<a href="${linkVal.replace('/api/', '/')}" target="_blank">${keyVal}</a>`;
+              }
+            }
+            rowArr.push(keyVal);
+          } else {
+            rowArr.push(' ');
+          }
+        }
+        resultData.push(rowArr)
+      }
+      return resultData;
+    }
+
+
+    function makeDataTable(data, title) {
+      titleID = title.replace(/\s/g, '_').replace(':', '')
+
+      $('.alltables').append(`
+        <div class="card">
+          <div class="htmx-container table-responsive">
+            <h2 class="tabletitle">${title}</h2>
+            <table id="${titleID}" class="table table-hover" width="100%"></table>
+          </div>
+        </div>
+      `);
+
+      reportData = makeDataTableData(data);
+      $("#" + titleID).DataTable({
+        data: reportData,
+        columns: dataTableColumns,
+        "paging": false
+      });
+    }
+
+    function isValidIpv4Addr(ip) {
+      return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ip);
+    }
+
+    function isValidIpv4Cidr(ip) {
+      return /^(?=\d+\.\d+\.\d+\.\d+\/[0-9]{2}$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}\/[0-9]{2}$/.test(ip);
+    }
+
+
+    $(document).ready(function () {
+      // Get the url params
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      netboxApiPaths = urlParams.getAll('api_path');
+
+      netboxParams = queryString;
+      for (path in netboxApiPaths) {
+        netboxParams = netboxParams.replace('api_path=' + path, '')
+      }
+      netboxParams = netboxParams.replace('result_keys=' + urlParams.get('result_keys'), '')
+      netboxParams = netboxParams.replace('table_groups=' + urlParams.get('table_groups'), '')
+      netboxParams = netboxParams.replace('?&', '?').replace('&&', '&')
+
+      netboxColKeys = urlParams.get('result_keys').split(',');
+      netboxTableGroups = urlParams.get('table_groups').split(',');
+      dataTableColumns = []
+      for (k of netboxColKeys) {
+        dataTableColumns.push({
+          title: k.replace(/[._]/g, ' ').replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+        });
+      }
+
+      // Debug
+      urlParams.forEach(function (value, key) {
+        $("#debug").append(key + ": " + value + "</br>");
+      });
+      $("#debug").append(netboxParams + "</br>");
+      $("#debug").append(netboxColKeys + "</br>");
+
+      // Does all the api requests
+      var xhrs = []
+      $.each(netboxApiPaths, function (index, apiPath) {
+        var req = $.ajax({
+          url: apiPath + netboxParams + "&limit=1000",
+          error: function (xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            if (xhr.status == 403) {
+              $('#error').append("<t1>ERROR: Not logged into Netbox, please login <a href='/login' target='_blank'>by clicking here.</a> </t1></br>Response text: " + err.Message);
+            } else {
+              $('#debug').append("<t3>ERROR: Request to netbox " + apiPath + " failed. </t3>" + err.Message);
+            }
+          }
+        });
+        xhrs.push(req);
+      });
+
+      $.when.apply($, xhrs).done(function () {
+        results = []
+        $.each(xhrs, function(index, xhr){
+          if (xhr.responseJSON.hasOwnProperty('results')) {
+            results = results.concat(xhr.responseJSON.results)
+          }
+        });
+
+        if (results.length > 0) {
+          if (netboxTableGroups[0] === '') {
+            // no grouping then we just build a single table
+            $("#debug").append("No netbox table groups</br>");
+            makeDataTable(results, "All");
+          } else {
+            // grouping means we need to make muliple arrays then the equlivant tables
+            var dataset = {};
+            for (row of results) {
+              // Get the group title and set it to none if it doesn't exist
+              groupTitle = getNestedValue(row, netboxTableGroups[0].split('.'))
+              if (groupTitle === 'null' || groupTitle === null || groupTitle === '') {
+                groupTitle = '__none';
+              }
+              // Add a leaf for this group title it is doesn't exist
+              if (!dataset.hasOwnProperty(groupTitle)) {
+                dataset[groupTitle] = [];
+              }
+              // Add the data
+              dataset[groupTitle].push(row);
+            }
+
+            for (set in dataset) {
+              $('#debug').append("processing " + set + "</br>");
+              titlePrefix = netboxTableGroups[0].split('.')[0].slice(0, 1).toUpperCase() + netboxTableGroups[0].split('.')[0].slice(1)
+              if (set === '__none') {
+                makeDataTable(dataset[set], titlePrefix + ': None');
+              } else {
+                makeDataTable(dataset[set], titlePrefix + ": " + set);
+              }
+            }
+          }
+
+        } else {
+          $('#debug').append("<t3>ERROR: no results found </t3>" + xhrs);
+        }
+      });
+    });
+  </script>
+{% endblock head %}
+
+{% block title %}Filter View{% endblock %}
+
+{% block content %}
+  <div id="object_list" class="alltables"></div>
+  <div id="error"></div>
+  <div id="debug">
+    <h2>DEBUG</h2>
+  </div>
+  <p></p>
+{% endblock %}
