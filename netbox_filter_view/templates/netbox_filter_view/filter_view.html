@@ -55,7 +55,11 @@
           keyVal = getNestedValue(row, key.split('.'))
           if (keyVal !== null) {
             let lowerKey = key.toLowerCase();
-            let isUrl = /^https?:\/\//i.test(keyVal) || keyVal.includes('.') || lowerKey.includes('url');
+            let isUrl = (typeof keyVal === "string") && (
+              /^https?:\/\//i.test(keyVal) ||
+              keyVal.includes('.') ||
+              lowerKey.includes('url')
+            );
             if (isUrl) {
               try {
                 let testUrl = new URL(keyVal.startsWith("http") ? keyVal : `http://${keyVal}`);
@@ -128,12 +132,12 @@
       netboxApiPaths = urlParams.getAll('api_path');
 
       netboxParams = queryString;
-      for (path in netboxApiPaths) {
+      for (const path of netboxApiPaths) {
         netboxParams = netboxParams.replace('api_path=' + path, '')
       }
       netboxParams = netboxParams.replace('result_keys=' + urlParams.get('result_keys'), '')
       netboxParams = netboxParams.replace('table_groups=' + urlParams.get('table_groups'), '')
-      netboxParams = netboxParams.replace('?&', '?').replace('&&', '&')
+      netboxParams = netboxParams.replace('&&', '&').replace('?&', '?')
 
       netboxColKeys = urlParams.get('result_keys').split(',');
       netboxTableGroups = urlParams.get('table_groups').split(',');

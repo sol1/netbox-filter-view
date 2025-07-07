@@ -35,9 +35,3 @@ class FilterviewTable(NetBoxTable):
             'description',
             'filter_url',
         )
-    
-    # def render_filter_url(self, value):
-    #     return format_html(
-    #         '<a href="/plugins/filter-view/filterviews/{0}">{0}</a>',
-    #         value
-    #     )
