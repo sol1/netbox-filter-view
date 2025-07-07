@@ -14,7 +14,7 @@ class FilterviewTable(NetBoxTable):
             </a>
         """,
         orderable=False,
-        verbose_name="Filter View",
+        verbose_name="Filter URL",
     )
     comments = columns.MarkdownColumn()
     tags = columns.TagColumn()

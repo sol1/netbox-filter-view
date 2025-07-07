@@ -1,11 +1,13 @@
 from netbox.plugins import PluginConfig
 
+from .version import __version__
+
 
 class NetBoxFilterViewConfig(PluginConfig):
     name = 'netbox_filter_view'
     verbose_name = 'NetBox Filter View'
     description = 'Provides a dynamic NetBox filter view page using API data.'
-    version = '0.1.0'
+    version = __version__
     author = 'Dylan Lucci'
     base_url = 'filter-view'
 
