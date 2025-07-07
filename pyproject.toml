@@ -2,10 +2,11 @@
 name = "netbox-filter-view"
 version = "0.1.0"
 description = "Provides a dynamic NetBox filter view page using API data."
-authors = {
-    { name = "Dylan Lucci", email = "dylan@sol1.com.au" }
-}
 dependencies = []
+
+[[project.authors]]
+name = "Dylan Lucci"
+email = "dylan@sol1.com.au"
 
 [project.urls]
 Homepage = "https://github.com/sol1/netbox-filter-view"
