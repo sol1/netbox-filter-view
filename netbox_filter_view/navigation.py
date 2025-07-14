@@ -1,6 +1,5 @@
 from netbox.plugins import PluginMenu, PluginMenuButton, PluginMenuItem
 
-
 filterview_buttons = [
     PluginMenuButton(
         link='plugins:netbox_filter_view:filterview_add',

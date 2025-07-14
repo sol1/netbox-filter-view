@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView
-
 from netbox.views import generic
 from utilities.views import register_model_view
 

@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from netbox.api.serializers import NetBoxModelSerializer
+from rest_framework import serializers
 
 from netbox_filter_view.models import Filterview
 
