@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from netbox_filter_view.models import Filterview
 
-__all__ = ('FilterviewSerializer')
+__all__ = ('FilterviewSerializer',)
 
 
 class FilterviewSerializer(NetBoxModelSerializer):
