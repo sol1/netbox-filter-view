@@ -52,7 +52,7 @@ jobs:
       - name: Create GitHub Release
         run: |
           echo "Finding version from dist/ filename..."
-          VERSION="v$(ls dist/netbox_filter_view-*.tar.gz | sed -E 's/.*netbox_filter_view-([0-9.]+)\.tar\.gz/\1/')"
+          VERSION="v$(python -c 'import tomllib, pathlib, sys; print(tomllib.loads(open(\"pyproject.toml\",\"rb\").read())[\"project\"][\"version\"])')"
           echo "Extracted version: $VERSION"
           
           gh release create "$VERSION" dist/netbox_filter_view-*.tar.gz dist/netbox_filter_view-*.whl \
