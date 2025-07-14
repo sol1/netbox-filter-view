@@ -1,7 +1,7 @@
 from netbox.api.viewsets import NetBoxModelViewSet
 
 from .. import models
-from .serializers import FilterviewSerializer
+from .serializers_ import FilterviewSerializer
 
 
 class FilterviewViewSet(NetBoxModelViewSet):
