@@ -1,6 +1,6 @@
 # NetBox Filter View
 
-NetBox Filter View is a simple plugin that allows you to create a URL to return multiple objects, define the columns to display, group the returned objects by a value (e.g. tenant), add sensible links to all the data, and return the data in DataTables format.
+NetBox Filter View is a simple plugin that allows you to create a URL to return multiple objects, define the columns to display, group the returned objects by a value (e.g. tenant), add sensible links to all the data, and return the data in DataTables.
 
 # Installation
 
@@ -29,7 +29,7 @@ URL parameters are used to define the filter views. They can be saved and shared
 The example below retrieves all Virtual Machines and Devices that have the tag `switch` for the customer `acme`. The generated tables are grouped by site name, and the listed fields (in order) are included in the table.
 
 ```
-?api_path=/api/virtualization/virtual-machines/&api_path=/api/dcim/devices/&result_keys=custom_fields.InternalName,device_type.model,primary_ip.address,custom_fields.URL,comments,name,site.name,rack.name,position&table_groups=site.name&tag=switch&tenant=acme
+api_path=/api/virtualization/virtual-machines/&api_path=/api/dcim/devices/&result_keys=custom_fields.InternalName,device_type.model,primary_ip.address,custom_fields.URL,comments,name,site.name,rack.name,position&table_groups=site.name&tag=switch&tenant=acme
 ```
 
 ## `api_path`
@@ -38,7 +38,7 @@ This parameter can be repeated, causing Filter View to load data from multiple o
 The value is the API path for the object you want to load.
 
 ```
-?api_path=/api/virtualization/virtual-machines/&api_path=/api/dcim/devices/
+api_path=/api/virtualization/virtual-machines/&api_path=/api/dcim/devices/
 ```
 
 ## `result_keys`
