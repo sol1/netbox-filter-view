@@ -67,7 +67,7 @@
             if (isValidUrl(keyVal)) {
               try {
                 let testUrl = new URL(keyVal.startsWith("http") ? keyVal : `http://${keyVal}`);
-                linkVal = testUrl;
+                linkVal = testUrl.href;
               } catch (e) {
                 console.warn(`Invalid URL detected in field "${key}": "${keyVal}". Rendering as plain text.`);
                 // invalid URL, just show as plain text
