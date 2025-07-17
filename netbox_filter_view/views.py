@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import TemplateView
 from netbox.views import generic
 from utilities.views import register_model_view
@@ -10,6 +12,7 @@ __all__ = (
     'FilterviewEditView',
     'FilterviewDeleteView',
     'RenderFilterView',
+    'RenderFilterViewURL',
 )
 
 
@@ -42,4 +45,16 @@ class RenderFilterView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['query_params'] = self.request.GET.urlencode()
+        context['filter_url'] = self.request.GET.get('filter_url', '')
         return context
+
+
+class RenderFilterViewURL(TemplateView):
+    template_name = 'netbox_filter_view/filterview_render_url.html'
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        obj = models.Filterview.objects.get(pk=pk)
+        filter_url = obj.filter_url
+        redirect_url = f"{reverse('plugins:netbox_filter_view:filterview_render')}?{filter_url}"
+        return redirect(redirect_url)

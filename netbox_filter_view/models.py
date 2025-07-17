@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from netbox.models import NetBoxModel
 
 
@@ -19,5 +20,4 @@ class Filterview(NetBoxModel):
         return self.name
 
     def get_absolute_url(self):
-        from django.urls import reverse
         return reverse('plugins:netbox_filter_view:filterview', args=[self.pk])

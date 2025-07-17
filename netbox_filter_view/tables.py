@@ -5,6 +5,13 @@ from . import models
 
 
 class FilterviewTable(NetBoxTable):
+    name = tables.TemplateColumn(
+        template_code="""
+        <a href="{% url 'plugins:netbox_filter_view:filterview' record.pk %}">{{ record.name }}</a>
+        """,
+        verbose_name="Name",
+        orderable=True,
+    )
     filter_url = tables.TemplateColumn(
         template_code="""
             <a href="{% url 'plugins:netbox_filter_view:filterview_render' %}?{{ record.filter_url|safe }}">
