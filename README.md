@@ -82,4 +82,5 @@ ssh netbox-dev-server
 cd /netbox-filter-view
 source /netbox/install/path/venv/bin/activate 
 pip install -e .
+python3 /netbox/install/path/netbox/manage.py runserver 0.0.0.0:8009
 ```
