@@ -69,3 +69,17 @@ They must match NetBox’s API parameters.
 ```
 &tag=switch&tenant=acme
 ```
+
+# Development
+Clone git repo to dev server, enable venv then cd to repo and pip install
+```
+ssh netbox-dev-server
+git clone https://github.com/sol1/netbox-filter-view
+```
+
+```
+ssh netbox-dev-server
+cd /netbox-filter-view
+source /netbox/install/path/venv/bin/activate 
+pip install -e .
+```
