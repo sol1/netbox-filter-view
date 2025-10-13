@@ -11,6 +11,7 @@ __all__ = (
     'FilterviewListView',
     'FilterviewEditView',
     'FilterviewDeleteView',
+    'FilterviewBulkImportView',
     'RenderFilterView',
     'RenderFilterViewURL',
 )
@@ -37,6 +38,12 @@ class FilterviewEditView(generic.ObjectEditView):
 @register_model_view(models.Filterview, 'delete')
 class FilterviewDeleteView(generic.ObjectDeleteView):
     queryset = models.Filterview.objects.all()
+
+
+@register_model_view(models.Filterview, 'bulk_import', detail=False)
+class FilterviewBulkImportView(generic.BulkImportView):
+    queryset = models.Filterview.objects.all()
+    model_form = forms.FilterviewImportForm
 
 
 class RenderFilterView(TemplateView):
