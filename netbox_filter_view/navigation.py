@@ -6,6 +6,11 @@ filterview_buttons = [
         title='Add',
         icon_class='mdi mdi-plus-thick',
     ),
+    PluginMenuButton(
+        link='plugins:netbox_filter_view:filterview_import',
+        title='Import',
+        icon_class='mdi mdi-upload',
+    ),
 ]
 
 filterview_items = (

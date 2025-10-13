@@ -26,6 +26,7 @@ class FilterviewView(generic.ObjectView):
 class FilterviewListView(generic.ObjectListView):
     queryset = models.Filterview.objects.all()
     table = tables.FilterviewTable
+    action_buttons = ('add', 'bulk_import')
 
 
 @register_model_view(models.Filterview, 'edit')
@@ -40,7 +41,7 @@ class FilterviewDeleteView(generic.ObjectDeleteView):
     queryset = models.Filterview.objects.all()
 
 
-@register_model_view(models.Filterview, 'bulk_import', detail=False)
+@register_model_view(models.Filterview, 'bulk_import', path='import', detail=False)
 class FilterviewBulkImportView(generic.BulkImportView):
     queryset = models.Filterview.objects.all()
     model_form = forms.FilterviewImportForm
