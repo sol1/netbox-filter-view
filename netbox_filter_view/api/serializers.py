@@ -7,18 +7,22 @@ __all__ = ('FilterviewSerializer',)
 
 
 class FilterviewSerializer(NetBoxModelSerializer):
-    filter_url = serializers.HyperlinkedIdentityField(
+    url = serializers.HyperlinkedIdentityField(
         view_name='plugins-api:netbox_filter_view-api:filterview-detail'
     )
+    filter_url = serializers.CharField(allow_blank=False)
 
     class Meta:
         model = Filterview
         fields = (
-            'pk',
             'id',
+            'url',
             'name',
             'description',
             'filter_url',
+            'created',
+            'last_updated',
+            'custom_fields',
             'tags',
         )
-        brief_fields = ('id', 'name', 'description', 'filter_url')
+        brief_fields = ('id', 'url', 'name', 'filter_url')
