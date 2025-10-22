@@ -11,6 +11,8 @@ class Filterview(NetBoxModel):
         help_text="Full filter URL containing an API call. Starts with ?api_path=...",
     )
 
+    clone_fields = ['name', 'filter_url']
+
     class Meta:
         ordering = ['name']
         verbose_name = "Filter View"
