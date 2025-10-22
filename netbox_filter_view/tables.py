@@ -34,6 +34,8 @@ class FilterviewTable(NetBoxTable):
             'filter_url',
             'tags',
             'comments',
+            'created',
+            'last_updated',
         )
         default_columns = (
             'name',

@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from netbox.views import generic
 from utilities.views import register_model_view
 
-from . import forms, models, tables
+from . import filtersets, forms, models, tables
 
 __all__ = (
     'FilterviewView',
@@ -12,6 +12,8 @@ __all__ = (
     'FilterviewEditView',
     'FilterviewDeleteView',
     'FilterviewBulkImportView',
+    'FilterviewBulkEditView',
+    'FilterviewBulkDeleteView',
     'RenderFilterView',
     'RenderFilterViewURL',
 )
@@ -26,6 +28,8 @@ class FilterviewView(generic.ObjectView):
 class FilterviewListView(generic.ObjectListView):
     queryset = models.Filterview.objects.all()
     table = tables.FilterviewTable
+    filterset = filtersets.FilterviewFilterSet
+    filterset_form = forms.FilterviewFilterForm
     action_buttons = ('add', 'bulk_import')
 
 
@@ -45,6 +49,20 @@ class FilterviewDeleteView(generic.ObjectDeleteView):
 class FilterviewBulkImportView(generic.BulkImportView):
     queryset = models.Filterview.objects.all()
     model_form = forms.FilterviewImportForm
+
+
+@register_model_view(models.Filterview, 'bulk_edit', path='edit', detail=False)
+class FilterviewBulkEditView(generic.BulkEditView):
+    queryset = models.Filterview.objects.all()
+    filterset = filtersets.FilterviewFilterSet
+    table = tables.FilterviewTable
+    form = forms.FilterviewForm
+
+
+@register_model_view(models.Filterview, 'bulk_delete', path='delete', detail=False)
+class FilterviewBulkDeleteView(generic.BulkDeleteView):
+    queryset = models.Filterview.objects.all()
+    table = tables.FilterviewTable
 
 
 class RenderFilterView(TemplateView):

@@ -1,5 +1,9 @@
-from netbox.forms import NetBoxModelForm, NetBoxModelImportForm
-from utilities.forms.fields import CommentField, CSVModelChoiceField
+from netbox.forms import (
+    NetBoxModelFilterSetForm,
+    NetBoxModelForm,
+    NetBoxModelImportForm,
+)
+from utilities.forms.fields import CommentField
 from utilities.forms.rendering import FieldSet
 
 from . import models
@@ -18,6 +22,13 @@ class FilterviewForm(NetBoxModelForm):
             'comments',
             'tags',
         )
+
+
+class FilterviewFilterForm(NetBoxModelFilterSetForm):
+    model = models.Filterview
+    fieldsets = (
+        FieldSet('q', 'filter_id', 'tags'),
+    )
 
 
 class FilterviewImportForm(NetBoxModelImportForm):
