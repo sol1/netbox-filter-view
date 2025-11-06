@@ -7,14 +7,14 @@ NetBox Filter View is a simple plugin that allows you to create a URL to return 
 **Download the latest release**
 ```bash
 cd /opt/netbox/plugins/
-wget https://github.com/sol1/netbox-filter-view/releases/download/v0.1.6/netbox_filter_view-0.1.6.tar.gz
+wget https://github.com/sol1/netbox-filter-view/releases/download/v0.1.7/netbox_filter_view-0.1.7.tar.gz
 ```
 _Use the most appropriate repository for your installation._
 
 **Add the plugin to `local_requirements.txt`**
 ```bash
 cd /opt/netbox/
-echo "netbox-filter-view @ file:///opt/netbox/plugins/netbox_filter_view-0.1.6.tar.gz" > local_requirements.txt
+echo "netbox-filter-view @ file:///opt/netbox/plugins/netbox_filter_view-0.1.7.tar.gz" > local_requirements.txt
 ```
 
 **Add the plugin to `configuration.py`**

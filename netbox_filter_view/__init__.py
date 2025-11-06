@@ -10,5 +10,6 @@ class NetBoxFilterViewConfig(PluginConfig):
     version = __version__
     author = 'Dylan Lucci'
     base_url = 'filter-view'
+    min_version = '4.3.0'
 
 config = NetBoxFilterViewConfig

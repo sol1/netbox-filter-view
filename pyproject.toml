@@ -1,6 +1,6 @@
 [project]
 name = "netbox-filter-view"
-version = "0.1.6"
+version = "0.1.7"
 description = "Provides a dynamic NetBox filter view page using API data."
 dependencies = []
 

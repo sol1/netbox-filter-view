@@ -2,8 +2,7 @@
 {% load static %}
 
 {% block head %}
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.datatables.net/2.0.8/js/jquery.dataTables.min.js"></script>
+  <script src="{% static 'DataTables/datatables.min.js' %}"></script>
   <link rel="stylesheet" href="{% static 'netbox/css/tables.css' %}">
   <style>
     .alltables > h2.tabletitle {
